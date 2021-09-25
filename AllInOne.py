@@ -333,6 +333,13 @@ print(test_1_4(*strings))
 #print(generate_squares(5))
 #>>> {1: 1, 2: 4, 3: 9, 4: 16, 5: 25}
 #```
+def generate_squares(lim_numb: int):
+    out_dict = {}
+    for i in range (1, lim_numb + 1):
+        out_dict[i] = i*i
+    return out_dict
+
+print(generate_squares(5))
 
 ##################################################################
 ### Task 4.11
@@ -350,10 +357,26 @@ print(test_1_4(*strings))
 #print(combine_dicts(dict_1, dict_2)
 #>>> {'a': 300, 'b': 200, 'c': 300}
 
-
 #print(combine_dicts(dict_1, dict_2, dict_3)
 #>>> {'a': 600, 'b': 200, 'c': 300, 'd': 100}
 #```
+def combine_dicts(*args):
+    combined_dict = {}
+    for temp_dict in args:
+        for key in temp_dict:
+            if key in combined_dict:
+                combined_dict[key] = int(combined_dict[key]) + int(temp_dict[key])
+            else:
+                combined_dict[key] = int(temp_dict[key]) 
+    return combined_dict
+
+
+dict_1 = {'a': 100, 'b': 200}
+dict_2 = {'a': 200, 'c': 300}
+dict_3 = {'a': 300, 'd': 100}
+
+print(combine_dicts(dict_1, dict_2))
+print(combine_dicts(dict_1, dict_2, dict_3))
 
 ### Materials
 #* [Scope](https://python-scripts.com/scope)

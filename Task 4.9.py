@@ -45,7 +45,7 @@ def let_it_dict (inp_list_for_dict: list):  # forming of a dictionary w the n of
                 dict_of_char[ch] = int(str(dict_of_char[ch])) + 1
     return dict_of_char
 
-def entry_counter (test_str: list, min_entry_counter = 2 ): # def val of entr=2 for sub.task 3
+def entry_counter (test_str: list, min_entry_counter = 2 ): # default value of entr=2 for sub.task 3
     out_list = []
     for key, value in let_it_dict(test_str).items():
         if value >= min_entry_counter:
