@@ -155,33 +155,112 @@ sort_by_age(file_load_path)
 
 ##################################################################
 ### Task 4.4
-#Look through file `modules/legb.py`.
-#1) Find a way to call `inner_function` without moving it from inside of `enclosed_function`.
-#2.1) Modify ONE LINE in `inner_function` to make it print variable 'a' from global scope.
-#2.2) Modify ONE LINE in `inner_function` to make it print variable 'a' form enclosing function.
+# Look through file `modules/legb.py`.
+# 1) Find a way to call `inner_function` without moving it from inside of `enclosed_function`.
+# 2.1) Modify ONE LINE in `inner_function` to make it print variable 'a' from global scope.
+# 2.2) Modify ONE LINE in `inner_function` to make it print variable 'a' form enclosing function.
+# Source :
+#
+# a = "I am global variable!"
+# def enclosing_funcion():
+#     a = "I am variable from enclosed function!"
+#     def inner_function():
+#         a = "I am local variable!"
+#         print(a)
+
+### 1)
+
+a = "I am global variable!"
+
+def enclosing_funcion():
+    a = "I am variable from enclosed function!"
+
+    def inner_function():
+        a = "I am local variable!"
+        print(a)
+    
+    return inner_function()
+
+enclosing_funcion()
+
+### 2)
+a = "I am global variable!"
+def enclosing_funcion():
+    a = "I am variable from enclosed function!"
+
+    def inner_function():
+        global a #a = "I am local variable!"
+        print(a)
+    
+    return inner_function()
+
+enclosing_funcion()
+
+## 3)
+a = "I am global variable!"
+def enclosing_funcion():
+    a = "I am variable from enclosed function!"
+
+    def inner_function():
+        nonlocal a 
+        print(a)
+    
+    return inner_function()
+
+enclosing_funcion()
 
 ##################################################################
 ### Task 4.5
-#Implement a decorator `remember_result` which remembers last result of function it decorates and prints it before next call.
+# Implement a decorator `remember_result` which remembers last result of function it decorates and prints it before next call.
 #```python
-#@remember_result
-#def sum_list(*args):
-#	result = ""
-#	for item in args:
-#		result += item
-#	print(f"Current result = '{result}'")
-#	return result
+# @remember_result
+# def sum_list(*args):
+#	 result = ""
+#	 for item in args:
+#		 result += item
+#	 print(f"Current result = '{result}'")
+#	 return result
 
-#sum_list("a", "b")
-#>>> "Last result = 'None'"
-#>>> "Current result = 'ab'"
-#sum_list("abc", "cde")
-#>>> "Last result = 'ab'" 
-#>>> "Current result = 'abccde'"
-#sum_list(3, 4, 5)
-#>>> "Last result = 'abccde'" 
-#>>> "Current result = '12'"
+# sum_list("a", "b")
+# >>> "Last result = 'None'"
+# >>> "Current result = 'ab'"
+# sum_list("abc", "cde")
+# >>> "Last result = 'ab'" 
+# >>> "Current result = 'abccde'"
+# sum_list(3, 4, 5)
+# >>> "Last result = 'abccde'" 
+# >>> "Current result = '12'"
 #```
+prev_result = None
+
+def check_if_it_int (*args):
+    for unit in args:
+        type_of_int = (isinstance(unit, int))
+    return type_of_int
+
+def remember_result(sum_list):
+    def prev_result(*args):
+        global prev_result
+        print('Last result = ' + str(prev_result))        
+        current_result = sum_list(*args)
+        prev_result = str(current_result)
+    return prev_result
+
+@remember_result
+def sum_list(*args):
+    if check_if_it_int (*args) == False:
+        result = ""
+    else:
+        result = 0
+
+    for item in args:
+        result += item
+    print(f"Current result = '{result}'")
+    return result
+
+sum_list("a", "b")
+sum_list("abc", "cde")
+sum_list(3, 4, 5)
 
 ##################################################################
 ### Task 4.6
