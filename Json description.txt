@@ -1,0 +1,59 @@
+Json data types:
+  "Page feed" - Feed of current RSS page in str format.
+  "Page link" - Current RSS page link in str format.
+  "Page description (optional)" - RSS page description. This parameter is optional and can be not presented.
+  "Language (optional)" - RSS page lang. This parameter is optional and can be not presented.
+  "Logo image link (optional)" - RSS page logo. This parameter is optional and can be not presented.
+  "News": [ ] - Container for news block.
+    "Title" - Title of news in str format.
+    "Date" - Date of news in str format.
+    "Link" - Link of news in str format.
+    "All links" : {} - Container for all links of current news.
+      "News link" - Link of a news it self.
+      "Source link" - If news source is on remote server here will be it's link.
+      "Media content" - if news contains any media content it will be its link.
+
+
+Json structure:
+{
+  "Page feed": "str",
+  "Page link": "str",
+  "Page description (optional)": "str",
+  "Language (optional)": "str",
+  "Logo image link (optional)": "str",
+  "News": [
+   {
+    "Title": "str",
+    "Date": "str",
+    "Link": "str",
+    "All links" : {
+      "News link": "str",
+      "Source link": "str",
+      "Media content": "str"
+    }
+    }
+]
+}
+
+
+Example:
+{
+  "Page feed": "Yahoo News - Latest News & Headlines",
+  "Page link": "https://www.yahoo.com/news",
+  "Page description (optional)": "The latest news and headlines from Yahoo! News. Get breaking news stories and in-depth coverage with videos and phot
+os.",
+  "Language (optional)": "en-US",
+  "Logo image link (optional)": "http://l.yimg.com/rz/d/yahoo_news_en-US_s_f_p_168x21_news.png",
+  "News": [
+   {
+    "Title": "Train riders held up phones as woman was raped, police say",
+    "Date": "2021-10-18T23:31:16Z",
+    "Link": "https://news.yahoo.com/train-riders-held-phones-woman-233116677.html",
+    "All links" : {
+      "News link": "https://news.yahoo.com/train-riders-held-phones-woman-233116677.html",
+      "Source link": "http://www.ap.org/",
+      "Media content": "https://s.yimg.com/uu/api/res/1.2/xSbaUJGen0FnUImMWan3hg--~B/aD0xNzMyO3c9MjYwMDthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/ap.org/eb292e4f51920e8e36e78d454ef21f95"
+    }
+    }
+]
+}
