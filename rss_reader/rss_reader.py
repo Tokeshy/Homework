@@ -64,6 +64,30 @@
 # 10) The `--limit` argument should also affect JSON generation.
 
 ##############################################################################################################
+## [Iteration 2] Distribution.
+
+# * Utility should be wrapped into distribution package with `setuptools`.
+# * This package should export CLI utility named `rss-reader`.
+
+
+### Task clarification (II)
+ 
+# 1) User should be able to run your application _both_ with and without installation of CLI utility,
+# meaning that this should work:
+
+# ```
+# > python rss_reader.py ...
+# ```
+
+# as well as this:  
+
+# ```
+# > rss_reader ...
+# ```
+# 2) Make sure your second iteration works on a clean machie with python 3.9. (!)
+# 3) Keep in mind that installed CLI utility should have the same functionality, so do not forget to update dependencies and packages.
+
+##############################################################################################################
 
 from argparse import ArgumentParser # for reading console params
 from requests import get  # linking with web
@@ -82,9 +106,9 @@ RSS urls for tests:
 
 '''
 
-if __name__ == '__main__':
+def RunIt():
    terminate = False  # app terminate flag
-   current_version = 'Version 1.0'  # is equal to current task iteration
+   current_version = 'Version 2.0'  # is equal to current task iteration
 
    try:  # try to load arguments and if not sucseed change app terminate flag for app termination
       inp_loader = ArgumentParser(description='Pure Python command-line RSS reader.')
@@ -139,3 +163,6 @@ if __name__ == '__main__':
 
    elif terminate == True:  # seems like we don't have to do anything else..at this time
       print('Parameters reading failed... \nSee --help for input format')
+
+if __name__ == '__main__':
+   RunIt()
