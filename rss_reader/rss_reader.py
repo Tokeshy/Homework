@@ -88,12 +88,40 @@
 # 3) Keep in mind that installed CLI utility should have the same functionality, so do not forget to update dependencies and packages.
 
 ##############################################################################################################
+## [Iteration 3] News caching.
+# The RSS news should be stored in a local storage while reading. The way and format of this storage you can choose yourself.
+# Please describe it in a separate section of README.md or in the documentation.
 
-from argparse import ArgumentParser # for reading console params
+# New optional argument `--date` must be added to your utility. It should take a date in `%Y%m%d` format.
+# For example: `--date 20191020`
+# Here date means actual *publishing date* not the date when you fetched the news.
+
+# The cashed news can be read with it. The new from the specified day will be printed out.
+# If the news are not found return an error.
+
+# If the `--date` argument is not provided, the utility should work like in the previous iterations.
+
+### Task clarification (III)
+# 1) Try to make your application crossplatform, meaning that it should work on both Linux and Windows.
+# For example when working with filesystem, try to use `os.path` lib instead of manually concatenating file paths.
+# 2) `--date` should **not** require internet connection to fetch news from local cache.
+# 3) User should be able to use `--date` without specifying RSS source. For example:
+# ```
+# > python rss_reader.py --date 20191206
+# ......
+# ```
+# Or for second iteration (when installed using setuptools):
+# ```
+# > rss_reader --date 20191206
+# ......
+# ```
+# 4) If `--date` specified _together with RSS source_, then app should get news _for this date_ from local cache that _were fetched from specified source_.
+# 5) `--date` should work correctly with both `--json`, `--limit`, `--verbose` and their different combinations.
+
+##############################################################################################################
+
 from requests import get  # linking with web
-
-import CustomFuncs  # custom functions container
-
+import CustomFuncs  # custom functions container - so creepy place
 
 '''
 RSS urls for tests:
@@ -103,66 +131,55 @@ RSS urls for tests:
    https://www.liga.net/tech/technology/rss.xml
    https://news.yandex.ru/society.rss
    https://www.trend.az/rss/trend_all_ru.rss
-
 '''
 
+
 def RunIt():
-   terminate = False  # app terminate flag
-   current_version = 'Version 2.0'  # is equal to current task iteration
+   current_version = 'Version 3.0'  # format "X.Y" were X is equal to current task iteration and Y reserved for something else)) - f.e. - commit num
+   so_can_i_run = CustomFuncs.CanIRun()  # loading running permissions and initial args
+   args = so_can_i_run[3]
+   terminate = so_can_i_run[0]
 
-   try:  # try to load arguments and if not sucseed change app terminate flag for app termination
-      inp_loader = ArgumentParser(description='Pure Python command-line RSS reader.')
-      inp_loader.add_argument('source', nargs='?', type = str, help = 'RSS URL')
-      inp_loader.add_argument('--version', action="store_true", help = 'Print version info')
-      inp_loader.add_argument('--json', action="store_true", help = 'Print result as JSON in stdout')
-      inp_loader.add_argument('--verbose', action="store_true", help = 'Outputs verbose status messages')
-      inp_loader.add_argument('--limit', nargs='?', type = int, help = 'Limit news topics if this parameter provided')
-      args = inp_loader.parse_args()
-      CustomFuncs.verbose = args.verbose
-      CustomFuncs.VerbosePrint('Loading arguments...Done')
+   if not terminate:
+      if args.version or args.date:  # cutting logic if it's not needed
+         if args.version:
+            print(current_version)  # so if we need only look at version just show this info & done
+         elif args.date:
+            CustomFuncs.VerbosePrint("... '--date' param was selected \nWell let's see what we got in cache")
+            if args.source:
+               CustomFuncs.LoadFromCache(args.date, args.source, args.json, args.limit)
+            else:
+               CustomFuncs.LoadFromCache(args.date, 'no_url', args.json, args.limit)
 
-      if args.source: 
-         terminate = False
-      else:
-         terminate = True
- 
-   except:
-      terminate = True
 
-   if args.version:  # so if we need only look at version just show this info & done
-      print(current_version)
-
-   elif terminate == False:  # if "version" is not enough keep mooving
-      CustomFuncs.VerbosePrint('Loading constants...')
-      no_such_resource = 'The resource you trying to connect is not responding or does not exists.'
-      CustomFuncs.VerbosePrint('...Done')
-
-      arguments = inp_loader.parse_args()
-      url = arguments.source
-   
-      CustomFuncs.VerbosePrint(f'Connecting attempt to {url}...')
-
-      if get(url).status_code != 200:
-         CustomFuncs.VerbosePrint('...Connection attempt failed')
-         print(no_such_resource)
-      else:
-         CustomFuncs.VerbosePrint('...Connection attempt succeed')
-         RssPage = get(url).text
-
-         CustomFuncs.VerbosePrint("OK, let's parse it...")
-
-         if not arguments.limit:
-            Output = CustomFuncs.BlockParser(RssPage)
-         else:
-            Output = CustomFuncs.BlockParser(RssPage, arguments.limit)
-            
+      elif not (args.version and args.date):  # if "version" is not enough keep mooving
+         CustomFuncs.VerbosePrint('Loading constants...')
+         no_such_resource = 'The resource you trying to connect is not responding or does not exists.'
          CustomFuncs.VerbosePrint('...Done')
+         url = args.source  
+         CustomFuncs.VerbosePrint(f'Connecting attempt to {url}...')
 
-      CustomFuncs.VerbosePrint('We start the printer, everything will be fine...')
-      CustomFuncs.Printer(Output, args.json)
+         if get(url).status_code != 200:
+            CustomFuncs.VerbosePrint('...Connection attempt failed')
+            print(no_such_resource)
+         else:
+            CustomFuncs.VerbosePrint('...Connection attempt succeed')
+            CustomFuncs.InitialStorage()
+            RssPage = get(url).text
+            CustomFuncs.VerbosePrint("OK, let's parse it...")
+
+            if not args.limit:
+               Output = CustomFuncs.BlockParser(RssPage, args.source)
+            else:
+               Output = CustomFuncs.BlockParser(RssPage, args.source, args.limit)
+            
+            CustomFuncs.VerbosePrint('...Done')
+
+         CustomFuncs.VerbosePrint('We start the printer, everything will be fine...')
+         CustomFuncs.Printer(Output, args.json)
 
    elif terminate == True:  # seems like we don't have to do anything else..at this time
-      print('Parameters reading failed... \nSee --help for input format')
+      print('Parameters reading failed... \nSee "--help" for input format')
 
 if __name__ == '__main__':
    RunIt()

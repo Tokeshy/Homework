@@ -1,0 +1,11 @@
+Cache storage creates after running of rss_reader w/o "--date" parameter.
+Every time cached data reload by actual request responce f.e - if first were requested 10 news (by "--limit") and after only 5 - there will be 5  as the latest limit in the storage.
+for each date creates it's oun subfolder in "CasheStorage" folder. In each subfolder news stored in files separated by link source (f.e RSS from "https://www.space.com/feeds/all" will be stored in "www.space.com.txt"). In case of storing RSS from more than 1 source you able to request more RSS that you requested w\o "--date" param, but in it's sum range (f.e 5 news from link_01 + 3 news from link_02 makes 8 news in storage saved separetly by it's source).
+Cache storage folder creates in project folder as subfolder:
+/ProjectFolder
+  /CasheStorage
+    /Date_01
+	  Link_01.txt
+	  Link_02.txt
+	/Date_02
+	  Link_01.txt
