@@ -5,6 +5,7 @@ Custom functions container
 from argparse import ArgumentParser  # for reading console params
 import os, sys  # some OS actions
 import ast
+import file_printer
 
 try:
    import dateutil.parser  # some strange story - it's invisible for console start so will install it if needed
@@ -16,6 +17,9 @@ except:
 no_such_info = 'Information not presented by this portal.'
 verbose = False
 path = os.path.dirname(os.path.abspath(sys.argv[0]))
+output_format = 0  # description of numbers in "LetItBe" func of "file_printer.py"
+epub_name = pdf_name = html_name = ''
+conv_needed = False  # if True will need conversion of news
 
 def CanIRun():  # loading initial arguments
    '''
@@ -25,7 +29,8 @@ def CanIRun():  # loading initial arguments
    version_only = False  # version only flag
    date_param_set = False  # date param presented flag
    args = None
-   global verbose
+   global verbose, pdf_name, html_name, output_format, conv_needed
+
    try:  # try to load arguments and if not sucseed change app terminate flag for app termination
       inp_loader = ArgumentParser(description='Pure Python command-line RSS reader.')
       inp_loader.add_argument('source', nargs='?', type = str, help = 'RSS URL')
@@ -34,6 +39,9 @@ def CanIRun():  # loading initial arguments
       inp_loader.add_argument('--verbose', action="store_true", help = 'Outputs verbose status messages')
       inp_loader.add_argument('--limit', nargs='?', type = int, help = 'Limit news topics if this parameter provided')
       inp_loader.add_argument('--date', nargs='?', type = str, help = 'Date of publication of news in which you are interested')
+      inp_loader.add_argument('--to-html', dest='html', nargs='?', type = str, help = 'Convertation to FileName.html - pls enter output file name w/o extention')
+      inp_loader.add_argument('--to-pdf', dest='pdf', nargs='?', type = str, help = 'Convertation to FileName.pdf - pls enter output file name w/o extention')
+
       args = inp_loader.parse_args()
       verbose = args.verbose
       VerbosePrint('Loading arguments...Done')
@@ -43,6 +51,18 @@ def CanIRun():  # loading initial arguments
       else:
          terminate = True
 
+      if args.html or args.pdf:
+         conv_needed = True
+         pdf_name = args.pdf
+         html_name = args.html
+         if args.html and args.pdf :
+            output_format = 3
+         elif args.html:
+            output_format = 1
+         elif args.pdf:
+            output_format = 2
+
+         
    except:
       terminate = True
    
@@ -224,7 +244,7 @@ def Printer(news_storage: dict, is_json = False):
       news_separator = '******************' + '\n'
    elif is_json:
       news_separator = ',\n    {'
-   
+
    VerbosePrint('....Done')
 
    if not is_json:  # if it's not a Json
@@ -283,6 +303,9 @@ def Printer(news_storage: dict, is_json = False):
 
       VerbosePrint('So here is your json....')
       print(json)  # outputed form of json was checked on "http://jsonviewer.stack.hu/", description is in "Json description.txt"
+   
+   if conv_needed:
+      file_printer.LetItBe(output_format, news_storage, pdf_name, html_name, path)
 
 
 def VerbosePrint(message):

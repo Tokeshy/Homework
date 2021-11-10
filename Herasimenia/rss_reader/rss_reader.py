@@ -119,6 +119,26 @@
 # 5) `--date` should work correctly with both `--json`, `--limit`, `--verbose` and their different combinations.
 
 ##############################################################################################################
+## [Iteration 4] Format converter.
+
+# You should implement the conversion of news in at least two of the suggested format: `.mobi`, `.epub`, `.fb2`, `.html`, `.pdf`
+
+# New optional argument must be added to your utility. This argument receives the path where new file will be saved. The arguments should represents which format will be generated.
+
+# For example:  `--to-mobi` or `--to-fb2` or `--to-epub`
+
+# You can choose yourself the way in which the news will be displayed, but the final text result should contain pictures and links, if they exist in the original article and if the  format permits to store this type of data.
+
+### Task clarification (IV)
+
+# Convertation options should work correctly together with all arguments that were implemented in Iterations 1-3. For example: 
+# * Format convertation process should be influenced by `--limit`.
+# * If `--json` is specified together with convertation options, then JSON news should 
+# be printed to stdout, and converted file should contain news in normal format.
+# * Logs from `--verbose` should be printed in stdout and not added to the resulting file.
+# * `--date` should also work correctly with format converter and to not require internet access.
+
+##############################################################################################################
 
 from requests import get  # linking with web
 import CustomFuncs  # custom functions container - so creepy place
@@ -135,7 +155,7 @@ RSS urls for tests:
 
 
 def RunIt():
-   current_version = 'Version 3.0'  # format "X.Y" were X is equal to current task iteration and Y reserved for something else)) - f.e. - commit num
+   current_version = 'Version 4.0'  # format "X.Y" were X is equal to current task iteration and Y reserved for something else)) - f.e. - commit num
    so_can_i_run = CustomFuncs.CanIRun()  # loading running permissions and initial args
    args = so_can_i_run[3]
    terminate = so_can_i_run[0]

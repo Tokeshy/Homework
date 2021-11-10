@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup(
     name = 'rss_reader',
-    version = '3.0',
+    version = '4.0',
     author = 'Vitali Herasimenia',
     author_email = 'SonkJeferson@gmail.com',
     packages = find_packages(),
